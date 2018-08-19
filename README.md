@@ -10,18 +10,17 @@
 * MongoDB
 
 #### How to test it
-Please, make sure you have all dependencies installed
-`npm install -g @angular/cli typescript gulp`
+Please, make sure you have all dependencies installed `npm install -g @angular/cli typescript gulp`
 
 Then, browse to backend and frontend directories and execute `npm install` in each one to install all dependencies.
 
 ##### Backend
 By default, this app uses the following configuration:
-`dcm2jpgCommand: ./dcm4che/bin/dcm2jpg
+```dcm2jpgCommand: ./dcm4che/bin/dcm2jpg
 tmpDir: /tmp
 dbUrl: mongodb://localhost:27017
 dbName: 'quibim'
-PORT: 3000`
+PORT: 3000```
 
 If you want to set a different value for some of this variables, just set the values you want as environment variables.
 
@@ -29,7 +28,7 @@ To run it, just browse to backend folder and execute `gulp`. By default it will 
 
 ##### Frontend
 By default, this app uses the following configuration:
-`apiUrl: http://localhost:3000`
+```apiUrl: http://localhost:3000```
 
 If you want to set a different value for some of this variables, just set the values you want as environment variables.
 
