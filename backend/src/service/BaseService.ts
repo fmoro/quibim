@@ -33,9 +33,23 @@ export abstract class BaseService extends DBConnection {
     doc: Object | any
   ): Promise<FindAndModifyWriteOpResultObject> {
     return this.DB.then((db: Db) => {
+      const { _id, ...data } = doc;
+
       return db
         .collection(this.collection)
-        .findOneAndReplace({ _id: doc._id }, doc);
+        .findOneAndReplace({ _id }, data);
+    });
+  }
+
+  public static async FIND_ONE_AND_UPDATE(
+    doc: Object | any
+  ): Promise<FindAndModifyWriteOpResultObject> {
+    return this.DB.then((db: Db) => {
+      const { _id, ...data } = doc;
+
+      return db
+        .collection(this.collection)
+        .findOneAndReplace({ _id }, { $set: data });
     });
   }
 

@@ -1,0 +1,27 @@
+<div *ngIf="user">
+  <h2>{{user.name}} Details</h2>
+  <div><span>id: </span>{{user._id}}</div>
+  <div>
+    <label>name:
+      <input [(ngModel)]="user.name" placeholder="name"/>
+    </label>
+  </div>
+  <div>
+    <label>email:
+      <input [(ngModel)]="user.email" placeholder="email"/>
+    </label>
+  </div>
+  <div>
+    <label>image:</label>
+    <div *ngIf="user.image">
+        <img [src]="image">
+    </div>
+    <div *ngIf="!user.image">
+        <input style="display: none" type="file" (change)="selectFile($event)" #fileInput>
+        <button (click)="fileInput.click()">Select File</button>
+        <button (click)="uploadImage()">Upload!</button>
+    </div>
+  </div>
+  <button (click)="goBack()">go back</button>
+  <button (click)="save()">save</button>
+</div>
