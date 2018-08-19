@@ -1,0 +1,17 @@
+{
+  "extends": "tslint-microsoft-contrib",
+  "rules": {
+    "export-name": false,
+    "missing-jsdoc": false,
+    "no-unnecessary-class": false,
+    "no-any": false,
+    "no-shadowed-variable": false,
+    "no-implicit-dependencies": false,
+    "no-submodule-imports": false,
+    "no-backbone-get-get-outside-model": false,
+    "no-backbone-get-set-outside-model": false,
+    "no-console": false,
+    "no-multiline-string": false,
+    "max-func-body-length": false
+  }
+}

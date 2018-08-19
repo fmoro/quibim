@@ -1,0 +1,41 @@
+<h2>Users</h2>
+
+<div>
+  <h3>Add new user</h3>
+  <label>Name:
+    <input #userName />
+  </label>
+  <label>e-mail:
+    <input type="email" #userEmail />
+  </label>
+  <label>Password:
+    <input type="password" #userPassword />
+  </label>
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button (click)="add(userName.value, userEmail.value, userPassword.value); userName.value=''; userEmail.value=''; userPassword.value=''">
+    add
+  </button>
+</div>
+
+<div>
+  <h3>User list</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>e-mail</th>
+        <th>Image</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td><a routerLink="/detail/{{user._id}}">{{user.name}}</a></td>
+        <td>{{user.email}}</td>
+        <td><span *ngIf="user.image">Yes</span><span *ngIf="!user.image">No</span></td>
+        <td><button title="delete user"
+          (click)="delete(user)">x</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
