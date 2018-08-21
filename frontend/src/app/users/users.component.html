@@ -30,7 +30,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let user of users">
-        <td><a routerLink="/detail/{{user._id}}">{{user.name}}</a></td>
+        <td><a routerLink="/user/{{user._id}}">{{user.name}}</a></td>
         <td>{{user.email}}</td>
         <td><span *ngIf="user.image">Yes</span><span *ngIf="!user.image">No</span></td>
         <td><button title="delete user"
