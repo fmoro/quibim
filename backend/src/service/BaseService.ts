@@ -3,6 +3,8 @@ import {
   Db,
   FilterQuery,
   FindAndModifyWriteOpResultObject,
+  FindOneAndReplaceOption,
+  FindOneOptions,
   InsertOneWriteOpResult
 } from 'mongodb';
 
@@ -11,15 +13,21 @@ import { DBConnection } from 'service/DBConnection';
 export abstract class BaseService extends DBConnection {
   protected static collection: string = '';
 
-  public static async FIND(query?: FilterQuery<any>): Promise<Cursor> {
+  public static async FIND(
+    query?: FilterQuery<any>,
+    options?: FindOneOptions
+  ): Promise<Cursor> {
     return this.DB.then((db: Db) => {
-      return db.collection(this.collection).find(query);
+      return db.collection(this.collection).find(query || {}, options);
     });
   }
 
-  public static async FIND_ONE(filter: Object): Promise<any> {
+  public static async FIND_ONE(
+    filter: Object,
+    options?: FindOneOptions
+  ): Promise<any> {
     return this.DB.then((db: Db) => {
-      return db.collection(this.collection).findOne(filter);
+      return db.collection(this.collection).findOne(filter, options);
     });
   }
 
@@ -30,36 +38,39 @@ export abstract class BaseService extends DBConnection {
   }
 
   public static async FIND_ONE_AND_REPLACE(
-    doc: Object | any
+    doc: Object | any,
+    options?: FindOneAndReplaceOption
   ): Promise<FindAndModifyWriteOpResultObject> {
     return this.DB.then((db: Db) => {
       const { _id, ...data } = doc;
 
       return db
         .collection(this.collection)
-        .findOneAndReplace({ _id }, data);
+        .findOneAndReplace({ _id }, data, options);
     });
   }
 
   public static async FIND_ONE_AND_UPDATE(
-    doc: Object | any
+    doc: Object | any,
+    options?: FindOneAndReplaceOption
   ): Promise<FindAndModifyWriteOpResultObject> {
     return this.DB.then((db: Db) => {
       const { _id, ...data } = doc;
 
       return db
         .collection(this.collection)
-        .findOneAndReplace({ _id }, { $set: data });
+        .findOneAndUpdate({ _id }, { $set: data }, options);
     });
   }
 
   public static async FIND_ONE_AND_DELETE(
-    doc: Object | any
+    doc: Object | any,
+    options?: Object
   ): Promise<FindAndModifyWriteOpResultObject> {
     return this.DB.then((db: Db) => {
       return db
         .collection(this.collection)
-        .findOneAndDelete({ _id: doc._id });
+        .findOneAndDelete({ _id: doc._id }, options);
     });
   }
 }

@@ -1,15 +1,18 @@
-import {
-  Db,
-  MongoClient
-} from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
 
 export abstract class DBConnection {
   protected static client: Promise<MongoClient>;
   protected static dbName: string;
 
-  public static async CONNECT(url: string, dbName: string): Promise<MongoClient> {
+  public static async CONNECT(
+    url: string,
+    dbName: string
+  ): Promise<MongoClient> {
     this.dbName = dbName;
-    this.client = MongoClient.connect(url, { useNewUrlParser: true });
+    this.client = MongoClient.connect(
+      url,
+      { useNewUrlParser: true }
+    );
 
     return this.client;
   }

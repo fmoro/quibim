@@ -1,6 +1,7 @@
 import {
   Db,
   FindAndModifyWriteOpResultObject,
+  FindOneAndReplaceOption,
   ObjectID
 } from 'mongodb';
 import { BaseService } from 'service/BaseService';
@@ -10,12 +11,9 @@ export class UserService extends BaseService {
 
   public static async SET_IMAGE(
     id: ObjectID,
-    imageId: ObjectID
+    imageId: ObjectID,
+    options?: FindOneAndReplaceOption
   ): Promise<FindAndModifyWriteOpResultObject> {
-    return this.DB.then((db: Db) => {
-      return db
-        .collection(this.collection)
-        .findOneAndReplace({ _id: id }, { $set: { image: imageId }});
-    });
+    return super.FIND_ONE_AND_UPDATE({ _id: id, image: imageId }, options);
   }
 }
