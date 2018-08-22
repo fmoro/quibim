@@ -15,9 +15,12 @@ export class UserController {
 
   public static async LIST(req: Request, res: Response): Promise<void> {
     try {
-      const cursor: Cursor = await UserService.FIND();
+      const cursor: Cursor = await UserService.FIND(
+        {},
+        { projection: { password: 0 } }
+      );
       const results: any[] = await cursor.toArray();
-      res.send(UserController.filterPasswords(results));
+      res.send(results);
     } catch (err) {
       console.error(err);
       res.status(500);
@@ -45,12 +48,15 @@ export class UserController {
     } else {
       try {
         const objectId: ObjectID = new ObjectID(id);
-        const result: any = await UserService.FIND_ONE({ _id: objectId });
+        const result: any = await UserService.FIND_ONE(
+          { _id: objectId },
+          { projection: { password: 0 } }
+        );
         if (!result) {
           res.status(404);
           res.send({ message: `Unable to find user ${id}` });
         } else {
-          res.send(UserController.filterPassword(result));
+          res.send(result);
         }
       } catch (err) {
         console.error(err);
@@ -69,11 +75,10 @@ export class UserController {
       try {
         const objectId: ObjectID = new ObjectID(id);
         const { name, email, _ } = req.body;
-        const result: any = await UserService.FIND_ONE_AND_UPDATE({
-          name,
-          email,
-          _id: objectId
-        });
+        const result: any = await UserService.FIND_ONE_AND_UPDATE(
+          { name, email, _id: objectId },
+          { projection: { password: 0 } }
+        );
         if (!result) {
           res.status(404);
           res.send({ message: `Unable to find user ${id}` });
@@ -97,9 +102,10 @@ export class UserController {
       try {
         const objectId: ObjectID = new ObjectID(id);
         const { name, email, _ } = req.body;
-        const result: any = await UserService.FIND_ONE_AND_DELETE({
-          _id: objectId
-        });
+        const result: any = await UserService.FIND_ONE_AND_DELETE(
+          { _id: objectId },
+          { projection: { password: 0 } }
+        );
         if (!result) {
           res.status(404);
           res.send({ message: `Unable to find user ${id}` });
@@ -134,9 +140,10 @@ export class UserController {
         );
         const result: any = await UserService.SET_IMAGE(
           objectId,
-          new ObjectID(fileDoc._id)
+          new ObjectID(fileDoc._id),
+          { projection: { password: 0 } }
         );
-        res.send(UserController.filterPassword(result));
+        res.send(result);
       } catch (err) {
         console.error(err);
         res.status(500);
@@ -182,7 +189,7 @@ export class UserController {
       (resolve: any, reject: any): any => {
         file.mv(`/tmp/${file.name}`, (err: any) => {
           if (err) {
-            return reject('Error moving image');
+            return reject(`Error moving image: ${err}`);
           }
           const execPromisified: any = promisify(exec);
 
@@ -190,29 +197,19 @@ export class UserController {
             `${UserController.dcm2jpgCommand} ${UserController.tmpDir}/${
               file.name
             } ${UserController.tmpDir}/${file.name}.jpg`
-          ).then((stdout: string, stderr: string) => {
-            return resolve({
-              filename: `${UserController.tmpDir}/${file.name}.jpg`
+          )
+            .then((output: any) => {
+              return fs.existsSync(`${UserController.tmpDir}/${file.name}.jpg`)
+                ? resolve({
+                    filename: `${UserController.tmpDir}/${file.name}.jpg`
+                  })
+                : reject(`Error converting image: ${JSON.stringify(output)}`);
+            })
+            .catch((error: any) => {
+              return reject(`Error executing dcm2jpg: ${error}`);
             });
-          });
         });
       }
     );
-  }
-
-  private static filterPassword(user: User): User {
-    const { password, ...filteredUser } = user;
-
-    return filteredUser;
-  }
-
-  private static filterPasswords(users: User[]): User[] {
-    const filteredUsers: User[] = [];
-    for (const user of users) {
-      const { password, ...filteredUser } = user;
-      filteredUsers.push(filteredUser);
-    }
-
-    return filteredUsers;
   }
 }
